@@ -1,12 +1,16 @@
-version: '2.2'
+version: '3.8'
 
 services:
   podsync:
     container_name: podsync
-    image: mxpv/podsync:latest
+    image: odayny/podsync:latest
+    build:
+      context: .
     restart: always
     ports:
-      - 80:80
+      - 8123:80
     volumes:
-      - ./data:/app/data/
-      - ./config.toml:/app/config.toml
+      - podsync-data:/go/src/app/data/
+      - ./config.toml:/go/src/app/config.toml:ro
+volumes:
+  podsync-data:

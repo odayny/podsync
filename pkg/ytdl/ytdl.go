@@ -254,7 +254,7 @@ func buildArgs(feedConfig *feed.Config, episode *model.Episode, outputFilePath s
 
 	// Insert additional per-feed youtube-dl arguments
 	args = append(args, feedConfig.YouTubeDLArgs...)
-
+	args = append(args, "--sponsorblock-remove", "all")
 	args = append(args, "--output", outputFilePath, episode.VideoURL)
 	return args
 }

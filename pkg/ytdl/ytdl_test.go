@@ -26,7 +26,7 @@ func TestBuildArgs(t *testing.T) {
 			format:   model.FormatAudio,
 			output:   "/tmp/1",
 			videoURL: "http://url",
-			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "bestaudio", "--output", "/tmp/1", "http://url"},
+			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "bestaudio", "--sponsorblock-remove", "all", "--output", "/tmp/1", "http://url"},
 		},
 		{
 			name:     "Audio low quality",
@@ -34,7 +34,7 @@ func TestBuildArgs(t *testing.T) {
 			quality:  model.QualityLow,
 			output:   "/tmp/1",
 			videoURL: "http://url",
-			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "worstaudio", "--output", "/tmp/1", "http://url"},
+			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "worstaudio", "--sponsorblock-remove", "all", "--output", "/tmp/1", "http://url"},
 		},
 		{
 			name:     "Audio best quality",
@@ -42,14 +42,14 @@ func TestBuildArgs(t *testing.T) {
 			quality:  model.QualityHigh,
 			output:   "/tmp/1",
 			videoURL: "http://url",
-			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "bestaudio", "--output", "/tmp/1", "http://url"},
+			expect:   []string{"--extract-audio", "--audio-format", "mp3", "--format", "bestaudio", "--sponsorblock-remove", "all", "--output", "/tmp/1", "http://url"},
 		},
 		{
 			name:     "Video unknown quality",
 			format:   model.FormatVideo,
 			output:   "/tmp/1",
 			videoURL: "http://url",
-			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--output", "/tmp/1", "http://url"},
+			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--sponsorblock-remove", "all", "--output", "/tmp/1", "http://url"},
 		},
 		{
 			name:      "Video unknown quality with maxheight",
@@ -57,7 +57,7 @@ func TestBuildArgs(t *testing.T) {
 			maxHeight: 720,
 			output:    "/tmp/1",
 			videoURL:  "http://url",
-			expect:    []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--output", "/tmp/1", "http://url"},
+			expect:    []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--sponsorblock-remove", "all", "--output", "/tmp/1", "http://url"},
 		},
 		{
 			name:     "Video low quality",
@@ -65,7 +65,7 @@ func TestBuildArgs(t *testing.T) {
 			quality:  model.QualityLow,
 			output:   "/tmp/2",
 			videoURL: "http://url",
-			expect:   []string{"--format", "worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]/worst[ext=mp4]/worst", "--output", "/tmp/2", "http://url"},
+			expect:   []string{"--format", "worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]/worst[ext=mp4]/worst", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url"},
 		},
 		{
 			name:      "Video low quality with maxheight",
@@ -74,7 +74,7 @@ func TestBuildArgs(t *testing.T) {
 			maxHeight: 720,
 			output:    "/tmp/2",
 			videoURL:  "http://url",
-			expect:    []string{"--format", "worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]/worst[ext=mp4]/worst", "--output", "/tmp/2", "http://url"},
+			expect:    []string{"--format", "worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]/worst[ext=mp4]/worst", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url"},
 		},
 		{
 			name:     "Video high quality",
@@ -82,7 +82,7 @@ func TestBuildArgs(t *testing.T) {
 			quality:  model.QualityHigh,
 			output:   "/tmp/2",
 			videoURL: "http://url1",
-			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--output", "/tmp/2", "http://url1"},
+			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url1"},
 		},
 		{
 			name:      "Video high quality with maxheight",
@@ -91,7 +91,7 @@ func TestBuildArgs(t *testing.T) {
 			maxHeight: 1024,
 			output:    "/tmp/2",
 			videoURL:  "http://url1",
-			expect:    []string{"--format", "bestvideo[height<=1024][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[height<=1024][ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--output", "/tmp/2", "http://url1"},
+			expect:    []string{"--format", "bestvideo[height<=1024][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[height<=1024][ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url1"},
 		},
 		{
 			name:     "Video high quality with custom youtube-dl arguments",
@@ -100,7 +100,7 @@ func TestBuildArgs(t *testing.T) {
 			output:   "/tmp/2",
 			videoURL: "http://url1",
 			ytdlArgs: []string{"--write-sub", "--embed-subs", "--sub-lang", "en,en-US,en-GB"},
-			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--write-sub", "--embed-subs", "--sub-lang", "en,en-US,en-GB", "--output", "/tmp/2", "http://url1"},
+			expect:   []string{"--format", "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]/best[ext=mp4]/best", "--write-sub", "--embed-subs", "--sub-lang", "en,en-US,en-GB", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url1"},
 		},
 		{
 			name:         "Custom format",
@@ -109,7 +109,7 @@ func TestBuildArgs(t *testing.T) {
 			quality:      model.QualityHigh,
 			output:       "/tmp/2",
 			videoURL:     "http://url1",
-			expect:       []string{"--audio-format", "m4a", "--format", "bestaudio[ext=m4a]", "--output", "/tmp/2", "http://url1"},
+			expect:       []string{"--audio-format", "m4a", "--format", "bestaudio[ext=m4a]", "--sponsorblock-remove", "all", "--output", "/tmp/2", "http://url1"},
 		},
 	}
 
