@@ -1,14 +1,28 @@
-FROM golang
-ADD ./ /go/src/app
-WORKDIR /go/src/app
-RUN make
+FROM golang:1.20 as builder
 
-RUN wget -O /usr/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
-RUN chmod +x /usr/bin/yt-dlp
-RUN ln -s /usr/bin/yt-dlp /usr/bin/youtube-dl
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends ca-certificates python3 python3-pip ffmpeg tzdata
+ENV TAG="nightly"
+ENV COMMIT=""
 
-ENTRYPOINT ["/go/src/app/bin/podsync"]
-# ENTRYPOINT ["/go/src/app/bin/podsync", "--no-banner", "--config /go/src/app/config.toml"]
-# CMD ["--no-banner --config /go/src/app/config.toml"]
+WORKDIR /build
+
+COPY . .
+
+RUN make build
+
+# Download youtube-dl
+RUN wget -O /usr/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
+    chmod +x /usr/bin/yt-dlp
+
+FROM alpine:3.17
+
+WORKDIR /app
+
+RUN apk --no-cache add ca-certificates python3 py3-pip ffmpeg tzdata \
+    # https://github.com/golang/go/issues/59305
+    libc6-compat && ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2
+
+COPY --from=builder /usr/bin/yt-dlp /usr/bin/youtube-dl
+COPY --from=builder /build/bin/podsync /app/podsync
+
+ENTRYPOINT ["/app/podsync"]
+CMD ["--no-banner"]

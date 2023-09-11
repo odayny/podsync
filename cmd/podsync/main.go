@@ -46,6 +46,7 @@ var (
 	version = "dev"
 	commit  = "none"
 	date    = "unknown"
+	arch    = ""
 )
 
 func main() {
@@ -75,6 +76,13 @@ func main() {
 		log.Info(banner)
 	}
 
+	log.WithFields(log.Fields{
+		"version": version,
+		"commit":  commit,
+		"date":    date,
+		"arch":    arch,
+	}).Info("running podsync")
+
 	// Load TOML file
 	log.Debugf("loading configuration %q", opts.ConfigPath)
 	cfg, err := LoadConfig(opts.ConfigPath)
@@ -92,13 +100,12 @@ func main() {
 			MaxAge:     cfg.Log.MaxAge,
 			Compress:   cfg.Log.Compress,
 		})
-	}
 
-	log.WithFields(log.Fields{
-		"version": version,
-		"commit":  commit,
-		"date":    date,
-	}).Info("running podsync")
+		// Optionally enable debug mode from config.toml
+		if cfg.Log.Debug {
+			log.SetLevel(log.DebugLevel)
+		}
+	}
 
 	downloader, err := ytdl.New(ctx, cfg.Downloader)
 	if err != nil {

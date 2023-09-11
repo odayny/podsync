@@ -23,9 +23,12 @@ path = "test"
   # To configure for a S3 provider, set key and secret in environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, respectively;
   # then fillout the API endpoint, region, and bucket below.
   [storage.s3]
-  endpoint = "https://s3.us-west-2.amazonaws.com"
+  endpoint_url = "https://s3.us-west-2.amazonaws.com"
   region = "us-west-2"
   bucket = "example-bucket-name"
+  # If you use prefix, you may need to add a path to `server.hostname` setting
+  # e.g. https://example-bucket-name.s3.us-west-2.amazonaws.com/example/prefix/
+  prefix = "example/prefix"
 
 # API keys to be used to access Youtube and Vimeo.
 # These can be either specified as string parameter or array of string (so those will be rotated).
@@ -75,14 +78,15 @@ vimeo = [ # Multiple keys will be rotated.
   # Optional Golang regexp format.
   # If set, then only download matching episodes.
   # Duration filters are in seconds.
-  filters = { title = "regex for title here", not_title = "regex for negative title match", description = "...", not_description = "...", min_duration = 0, max_duration = 86400 }
+  # max_age filter is in days.
+  filters = { title = "regex for title here", not_title = "regex for negative title match", description = "...", not_description = "...", min_duration = 0, max_duration = 86400, max_age = 365 }
 
   # Optional extra arguments passed to youtube-dl when downloading videos from this feed.
   # This example would embed available English closed captions in the videos.
   # Note that setting '--audio-format' for audio format feeds, or '--format' or '--output' for any format may cause
   # unexpected behaviour. You should only use this if you know what you are doing, and have read up on youtube-dl's options!
   youtube_dl_args = ["--write-sub", "--embed-subs", "--sub-lang", "en,en-US,en-GB"]
-  
+
   # When set to true, podcasts indexers such as iTunes or Google Podcasts will not index this podcast
   private_feed = true
 
@@ -123,3 +127,4 @@ max_size = 50 # MB
 max_age = 30 # days
 max_backups = 7
 compress = true
+debug = false

@@ -1,9 +1,11 @@
-name: Release
+name: Nightly
 
 on:
+  schedule:
+    - cron: "0 0 * * *" # Every day at midnight
   push:
-    tags:
-      - 'v*'
+    paths:
+      - ".github/workflows/nightly.yml"
 
 env:
   REGISTRY: ghcr.io
@@ -11,19 +13,17 @@ env:
 
 jobs:
   publish:
-    name: Publish
+    name: Nightly
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     permissions:
-      contents: write
+      contents: read
       packages: write
 
     steps:
       - name: 📦 Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: 🧪 Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -35,23 +35,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🏗️ Build container and push
+      - name: 🏗️ Build and push
         uses: docker/build-push-action@v4
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: nightly
           COMMIT: ${{ github.sha }}
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest, ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
-
-      - name: 🚧️ Make release
-        uses: goreleaser/goreleaser-action@v4
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          version: latest
-          args: release --clean
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:nightly
